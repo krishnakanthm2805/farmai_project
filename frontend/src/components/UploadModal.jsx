@@ -160,12 +160,12 @@ Boundaries:
                 <p className="text-sm font-bold text-slate-200">
                   {selectedFile ? selectedFile.name : 'Click to select or drag & drop land record'}
                 </p>
-                <p className="text-xs text-slate-400 mt-1">Supports PDF, PNG, JPG, TIFF land record scans</p>
+                <p className="text-xs text-slate-400 mt-1">Supports PDF, PNG, JPG, TIFF, or ZIP bundle</p>
                 <input
                   type="file"
                   onChange={(e) => setSelectedFile(e.target.files[0])}
                   className="mt-4 text-xs text-slate-400"
-                  accept=".pdf,.jpg,.jpeg,.png,.tif,.tiff,.txt"
+                  accept=".pdf,.jpg,.jpeg,.png,.tif,.tiff,.txt,.zip"
                 />
               </div>
 

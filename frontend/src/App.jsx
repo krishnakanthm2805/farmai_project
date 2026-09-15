@@ -25,6 +25,7 @@ export default function App() {
   const [cadastralData, setCadastralData] = useState(null);
   const [referenceLayers, setReferenceLayers] = useState(null);
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [sampleDocs, setSampleDocs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Initial Load
@@ -44,6 +45,13 @@ export default function App() {
         if (layerRes.ok) {
           const layerJson = await layerRes.json();
           setReferenceLayers(layerJson);
+        }
+
+        // Load benchmark sample documents
+        const samplesRes = await fetch('/api/samples');
+        if (samplesRes.ok) {
+          const samplesJson = await samplesRes.json();
+          setSampleDocs(samplesJson);
         }
 
         // Run default analysis on 102/1A (or active sample)
