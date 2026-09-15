@@ -8,6 +8,8 @@ import os
 import zipfile
 import json
 import io
+import shutil
+import tempfile
 from typing import Dict, Any, List, Optional
 
 from backend.ocr_engine import ocr_engine
@@ -24,6 +26,117 @@ class BatchIngestionEngine:
     def __init__(self):
         os.makedirs(LAND_DOCS_DIR, exist_ok=True)
         os.makedirs(GEOSPATIAL_DIR, exist_ok=True)
+
+    def process_zip_file(self, zip_filepath: str) -> Dict[str, Any]:
+        """Extracts a large ZIP archive (up to 1GB+) directly from disk in streaming chunks."""
+        processed_docs = []
+        processed_layers = []
+        
+        with zipfile.ZipFile(zip_filepath, "r") as z:
+            for file_info in z.infolist():
+                if file_info.is_dir() or file_info.filename.startswith("__MACOSX") or "/." in file_info.filename or file_info.filename.startswith("."):
+                    continue
+                
+                filename = os.path.basename(file_info.filename)
+                if not filename:
+                    continue
+                ext = os.path.splitext(filename)[1].lower()
+                path_lower = file_info.filename.lower()
+                
+                # 1. Process Geospatial Layers (GeoJSON, JSON)
+                if ext in [".geojson", ".json"] and filename != "sample_documents.json":
+                    target_dir = GEOSPATIAL_DIR
+                    os.makedirs(target_dir, exist_ok=True)
+                    target_path = os.path.join(target_dir, filename)
+                    
+                    with z.open(file_info) as source, open(target_path, "wb") as target:
+                        shutil.copyfileobj(source, target)
+                    
+                    try:
+                        with open(target_path, "r", encoding="utf-8", errors="ignore") as fp:
+                            geojson_content = json.load(fp)
+                        if "features" in geojson_content:
+                            for feat in geojson_content["features"]:
+                                s_no = feat.get("properties", {}).get("survey_no")
+                                if s_no:
+                                    clean_s = str(s_no).strip().replace(" ", "")
+                                    spatial_engine.parcels_by_survey[clean_s] = feat
+                                    spatial_engine.cadastral_geojson["features"].append(feat)
+                            processed_layers.append({
+                                "filename": filename,
+                                "feature_count": len(geojson_content["features"]),
+                                "type": "GeoJSON FeatureCollection"
+                            })
+                    except Exception as e:
+                        print(f"Notice on GeoJSON parse ({filename}): {e}")
+
+                # 2. Process Land Documents (PDF, Images, Text)
+                elif ext in [".pdf", ".jpg", ".jpeg", ".png", ".tif", ".tiff", ".txt"]:
+                    category = "LA_Patta_land_Documents"
+                    subfolder = "LA_Patta_land_Documents"
+                    if "patta" in path_lower or "la_" in path_lower:
+                        category = "LA_Patta_land_Documents"
+                        subfolder = "LA_Patta_land_Documents"
+                    elif "lps" in path_lower or "plan" in path_lower or "schedule" in path_lower:
+                        category = "Land_Plan_Schedule_LPS"
+                        subfolder = "Land_Plan_Schedule_LPS"
+                    elif "administrative" in path_lower or "sanction" in path_lower or "as" in path_lower:
+                        category = "Administrative_Sanction_AS"
+                        subfolder = "Administrative_Sanction_AS"
+                    elif "government" in path_lower or "order" in path_lower or "go" in path_lower:
+                        category = "Government_Order_GO"
+                        subfolder = "Government_Order_GO"
+
+                    target_dir = os.path.join(LAND_DOCS_DIR, subfolder)
+                    os.makedirs(target_dir, exist_ok=True)
+                    target_path = os.path.join(target_dir, filename)
+
+                    with z.open(file_info) as source, open(target_path, "wb") as target:
+                        shutil.copyfileobj(source, target)
+
+                    try:
+                        with open(target_path, "rb") as f:
+                            file_data = f.read()
+
+                        doc_data = ocr_engine.extract_from_file_bytes(file_data, filename, category)
+                        doc_data["doc_category"] = category
+                        survey_no = doc_data.get("full_survey_ref") or doc_data.get("survey_no") or "102/3A"
+                        
+                        fmb_data = fmb_engine.calculate_fmb_polygon(survey_no)
+                        reconciliation = spatial_engine.reconcile_land_record(doc_data, fmb_data)
+                        risk_evaluation = risk_analyzer.evaluate_risk(reconciliation)
+
+                        lat, lng = spatial_engine.extract_centroid_lat_lng(reconciliation.get("cadastral_parcel", {}).get("geometry", {}))
+                        terrain_data = terrain_engine.analyze_parcel_terrain(
+                            lat=lat,
+                            lng=lng,
+                            district=doc_data.get("district", "Thoothukudi"),
+                            taluk=doc_data.get("taluk", "Thoothukudi")
+                        )
+
+                        processed_docs.append({
+                            "filename": filename,
+                            "relative_path": file_info.filename,
+                            "category": category,
+                            "file_size_bytes": file_info.file_size,
+                            "survey_no": survey_no,
+                            "ocr_extracted": doc_data,
+                            "reconciliation": reconciliation,
+                            "risk_assessment": risk_evaluation,
+                            "terrain_analysis": terrain_data
+                        })
+                    except Exception as e:
+                        print(f"Notice on document parse ({filename}): {e}")
+
+        self._sync_sample_documents_registry(processed_docs)
+
+        return {
+            "status": "SUCCESS",
+            "total_documents_processed": len(processed_docs),
+            "total_layers_ingested": len(processed_layers),
+            "documents": processed_docs,
+            "layers": processed_layers
+        }
 
     def process_zip_bytes(self, zip_bytes: bytes) -> Dict[str, Any]:
         """Extracts a ZIP archive in-memory or on disk and processes all contained documents and GIS layers."""

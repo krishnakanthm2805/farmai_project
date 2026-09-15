@@ -182,6 +182,50 @@ export default function App() {
     }
   };
 
+  const handleScanLocalFolders = async () => {
+    try {
+      setIsLoading(true);
+      setIsUploadOpen(false);
+      const res = await fetch('/api/batch/scan-folders', { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.documents?.length > 0) {
+          const firstDoc = data.documents[0];
+          setAnalysisResult({
+            pipeline_status: 'SUCCESS',
+            ocr_extracted: firstDoc.ocr_extracted,
+            reconciliation: firstDoc.reconciliation,
+            risk_assessment: firstDoc.risk_assessment,
+            terrain_analysis: firstDoc.terrain_analysis
+          });
+          if (firstDoc.survey_no) {
+            setSelectedSurveyNo(firstDoc.survey_no);
+          }
+        }
+        
+        // Refresh cadastral GeoJSON
+        const cadRes = await fetch('/api/cadastral/parcels');
+        if (cadRes.ok) {
+          const cadJson = await cadRes.json();
+          setCadastralData(cadJson);
+        }
+
+        // Refresh sample list
+        const samplesRes = await fetch('/api/samples');
+        if (samplesRes.ok) {
+          const samplesJson = await samplesRes.json();
+          setSampleDocs(samplesJson);
+        }
+
+        setActiveNav('dashboard');
+      }
+    } catch (err) {
+      console.error('Local scan error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-[#F8FAFC] font-sans text-slate-900 antialiased">
       {/* 1. Left Sidebar */}
@@ -363,6 +407,7 @@ export default function App() {
         onClose={() => setIsUploadOpen(false)}
         onAnalyzeText={handleCustomTextAnalysis}
         onUploadFile={handleFileUpload}
+        onScanLocalFolders={handleScanLocalFolders}
         isAnalyzing={isLoading}
       />
 

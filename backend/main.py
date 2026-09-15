@@ -4,6 +4,8 @@ FastAPI Backend API Server for FarmAI - Multimodal GeoAI & Land Document Intelli
 
 import os
 import json
+import shutil
+import tempfile
 from typing import Dict, Any, Optional, List
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -213,14 +215,32 @@ def get_terrain_elevation(survey_no: str):
 
 @app.post("/api/batch/upload-zip")
 async def upload_and_process_zip(file: UploadFile = File(...)):
-    """Accepts a ZIP bundle containing subfolders of PDFs, images, and GeoJSON files, extracting and processing all."""
-    contents = await file.read()
+    """Accepts a ZIP bundle (up to 1GB+) containing subfolders of PDFs, images, and GeoJSON files, extracting and streaming to disk."""
     filename = file.filename or "bundle.zip"
     if not filename.lower().endswith(".zip"):
         raise HTTPException(status_code=400, detail="File must be a valid .zip archive")
     
-    result = batch_engine.process_zip_bytes(contents)
-    return result
+    # Stream directly to temporary file on disk (eliminates RAM bottleneck for 500MB+ files)
+    temp_dir = tempfile.mkdtemp()
+    temp_zip_path = os.path.join(temp_dir, filename)
+    try:
+        with open(temp_zip_path, "wb") as buffer:
+            while chunk := await file.read(1024 * 1024 * 8):  # 8MB streaming chunks
+                buffer.write(chunk)
+        
+        result = batch_engine.process_zip_file(temp_zip_path)
+        return result
+    finally:
+        # Safe cleanup of temporary zip file
+        if os.path.exists(temp_zip_path):
+            try:
+                os.remove(temp_zip_path)
+            except Exception:
+                pass
+        try:
+            os.rmdir(temp_dir)
+        except Exception:
+            pass
 
 @app.post("/api/batch/scan-folders")
 def scan_and_index_dataset_folders():
