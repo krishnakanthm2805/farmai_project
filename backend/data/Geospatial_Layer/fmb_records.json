@@ -1,0 +1,277 @@
+{
+  "102/1A": {
+    "survey_no": "102/1A",
+    "village": "Perungudi",
+    "fmb_sheet_no": "FMB-SH-102-2021",
+    "g_line_length_m": 88.5,
+    "boundary_points": [
+      {
+        "point_id": "A",
+        "lat": 12.96,
+        "lng": 80.24,
+        "description": "South-West Stone"
+      },
+      {
+        "point_id": "B",
+        "lat": 12.9602,
+        "lng": 80.2408,
+        "description": "South-East Stone"
+      },
+      {
+        "point_id": "C",
+        "lat": 12.9608,
+        "lng": 80.2407,
+        "description": "North-East Stone"
+      },
+      {
+        "point_id": "D",
+        "lat": 12.9606,
+        "lng": 80.2399,
+        "description": "North-West Stone"
+      }
+    ],
+    "ladder_offsets": [
+      {
+        "chainage_m": 0.0,
+        "offset_m": 0.0,
+        "side": "origin"
+      },
+      {
+        "chainage_m": 35.2,
+        "offset_m": 24.8,
+        "side": "left"
+      },
+      {
+        "chainage_m": 62.0,
+        "offset_m": 26.5,
+        "side": "right"
+      },
+      {
+        "chainage_m": 88.5,
+        "offset_m": 0.0,
+        "side": "terminal"
+      }
+    ],
+    "computed_area_sqm": 4850.0,
+    "computed_area_acres": 1.198,
+    "survey_date": "2021-08-14",
+    "surveyor_id": "TN-SURV-CHN-042"
+  },
+  "104/2B": {
+    "survey_no": "104/2B",
+    "village": "Perungudi",
+    "fmb_sheet_no": "FMB-SH-104-2019",
+    "g_line_length_m": 94.0,
+    "boundary_points": [
+      {
+        "point_id": "A",
+        "lat": 12.96,
+        "lng": 80.242,
+        "description": "SW Boundary"
+      },
+      {
+        "point_id": "B",
+        "lat": 12.9601,
+        "lng": 80.243,
+        "description": "SE Boundary"
+      },
+      {
+        "point_id": "C",
+        "lat": 12.9608,
+        "lng": 80.2429,
+        "description": "NE Boundary"
+      },
+      {
+        "point_id": "D",
+        "lat": 12.9607,
+        "lng": 80.2418,
+        "description": "NW Boundary"
+      }
+    ],
+    "ladder_offsets": [
+      {
+        "chainage_m": 0.0,
+        "offset_m": 0.0,
+        "side": "origin"
+      },
+      {
+        "chainage_m": 42.0,
+        "offset_m": 30.5,
+        "side": "left"
+      },
+      {
+        "chainage_m": 75.0,
+        "offset_m": 31.0,
+        "side": "right"
+      },
+      {
+        "chainage_m": 94.0,
+        "offset_m": 0.0,
+        "side": "terminal"
+      }
+    ],
+    "computed_area_sqm": 5740.0,
+    "computed_area_acres": 1.418,
+    "survey_date": "2019-11-20",
+    "surveyor_id": "TN-SURV-CHN-019"
+  },
+  "108/3": {
+    "survey_no": "108/3",
+    "village": "Perungudi",
+    "fmb_sheet_no": "FMB-SH-108-2020",
+    "g_line_length_m": 110.0,
+    "boundary_points": [
+      {
+        "point_id": "A",
+        "lat": 12.9588,
+        "lng": 80.244,
+        "description": "SW Original Stone (Excluding Lake Buffer)"
+      },
+      {
+        "point_id": "B",
+        "lat": 12.9589,
+        "lng": 80.2452,
+        "description": "SE Original Stone"
+      },
+      {
+        "point_id": "C",
+        "lat": 12.9595,
+        "lng": 80.245,
+        "description": "NE Stone"
+      },
+      {
+        "point_id": "D",
+        "lat": 12.9593,
+        "lng": 80.2438,
+        "description": "NW Stone"
+      }
+    ],
+    "ladder_offsets": [
+      {
+        "chainage_m": 0.0,
+        "offset_m": 0.0,
+        "side": "origin"
+      },
+      {
+        "chainage_m": 55.0,
+        "offset_m": 35.0,
+        "side": "left"
+      },
+      {
+        "chainage_m": 110.0,
+        "offset_m": 0.0,
+        "side": "terminal"
+      }
+    ],
+    "computed_area_sqm": 6600.0,
+    "computed_area_acres": 1.63,
+    "survey_date": "2020-03-12",
+    "surveyor_id": "TN-SURV-CHN-088"
+  },
+  "110/1A": {
+    "survey_no": "110/1A",
+    "village": "Perungudi",
+    "fmb_sheet_no": "FMB-SH-110-2023",
+    "g_line_length_m": 82.0,
+    "boundary_points": [
+      {
+        "point_id": "A",
+        "lat": 12.962,
+        "lng": 80.2405,
+        "description": "SW Highway Corner"
+      },
+      {
+        "point_id": "B",
+        "lat": 12.9621,
+        "lng": 80.2415,
+        "description": "SE Highway Corner"
+      },
+      {
+        "point_id": "C",
+        "lat": 12.9626,
+        "lng": 80.2414,
+        "description": "NE Road Verge"
+      },
+      {
+        "point_id": "D",
+        "lat": 12.9625,
+        "lng": 80.2403,
+        "description": "NW Road Verge"
+      }
+    ],
+    "ladder_offsets": [
+      {
+        "chainage_m": 0.0,
+        "offset_m": 0.0,
+        "side": "origin"
+      },
+      {
+        "chainage_m": 40.0,
+        "offset_m": 25.0,
+        "side": "left"
+      },
+      {
+        "chainage_m": 82.0,
+        "offset_m": 0.0,
+        "side": "terminal"
+      }
+    ],
+    "computed_area_sqm": 4250.0,
+    "computed_area_acres": 1.05,
+    "survey_date": "2023-04-11",
+    "surveyor_id": "TN-SURV-CHN-057"
+  },
+  "112/1": {
+    "survey_no": "112/1",
+    "village": "Perungudi",
+    "fmb_sheet_no": "FMB-SH-112-2022",
+    "g_line_length_m": 98.0,
+    "boundary_points": [
+      {
+        "point_id": "A",
+        "lat": 12.961,
+        "lng": 80.246,
+        "description": "SW Stone"
+      },
+      {
+        "point_id": "B",
+        "lat": 12.9611,
+        "lng": 80.2469,
+        "description": "SE Stone (True FMB marks 80.2469, Cadastral GIS shows 80.2472)"
+      },
+      {
+        "point_id": "C",
+        "lat": 12.9618,
+        "lng": 80.2468,
+        "description": "NE Stone"
+      },
+      {
+        "point_id": "D",
+        "lat": 12.9617,
+        "lng": 80.2458,
+        "description": "NW Stone"
+      }
+    ],
+    "ladder_offsets": [
+      {
+        "chainage_m": 0.0,
+        "offset_m": 0.0,
+        "side": "origin"
+      },
+      {
+        "chainage_m": 48.0,
+        "offset_m": 28.0,
+        "side": "left"
+      },
+      {
+        "chainage_m": 98.0,
+        "offset_m": 0.0,
+        "side": "terminal"
+      }
+    ],
+    "computed_area_sqm": 5460.0,
+    "computed_area_acres": 1.349,
+    "survey_date": "2022-06-18",
+    "surveyor_id": "TN-SURV-CHN-033"
+  }
+}

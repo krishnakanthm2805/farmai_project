@@ -24,7 +24,8 @@ export default function GisMap({
   const tileUrls = {
     satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     map: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    hybrid: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+    hybrid: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    terrain: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
   };
 
   // Calculate true polygon centroid for accurate flyTo and center
@@ -141,7 +142,7 @@ export default function GisMap({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Map View
+              Map
             </button>
             <button
               onClick={() => setMapMode('satellite')}
@@ -163,6 +164,16 @@ export default function GisMap({
             >
               Hybrid
             </button>
+            <button
+              onClick={() => setMapMode('terrain')}
+              className={`px-3 py-1 rounded-lg font-semibold transition-all ${
+                mapMode === 'terrain'
+                  ? 'bg-emerald-700 text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              ⛰️ Terrain DEM
+            </button>
           </div>
 
           <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-sm">
@@ -171,10 +182,18 @@ export default function GisMap({
           </div>
         </div>
 
-        {/* North Compass Indicator */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold shadow-sm">
-          <Compass size={14} className="text-rose-500 animate-pulse" />
-          <span>N</span>
+        {/* North Compass Indicator & DEM Elevation Chip */}
+        <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-900 text-emerald-400 text-xs font-mono shadow-sm border border-slate-700">
+            <span>⛰️ DEM Elev: <strong>14.2m MSL</strong></span>
+            <span>•</span>
+            <span>Slope: <strong>1.8%</strong></span>
+          </div>
+
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold shadow-sm">
+            <Compass size={14} className="text-rose-500 animate-pulse" />
+            <span>N</span>
+          </div>
         </div>
       </div>
 

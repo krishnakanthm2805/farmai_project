@@ -13,6 +13,7 @@ from backend.ocr_engine import ocr_engine
 from backend.fmb_parser import fmb_engine
 from backend.spatial_engine import spatial_engine
 from backend.risk_analyzer import risk_analyzer
+from backend.terrain_engine import terrain_engine
 
 app = FastAPI(
     title="FarmAI GeoLand Intelligence API",
@@ -99,13 +100,24 @@ def analyze_sample(sample_id: str):
     # 4. Title Integrity & Risk Assessment
     risk_evaluation = risk_analyzer.evaluate_risk(reconciliation)
 
+    # 5. Raster DEM & Terrain Analysis (Elevation, Slope, Flood Risk)
+    cad_parcel = reconciliation.get("cadastral_parcel", {})
+    coords = cad_parcel.get("geometry", {}).get("coordinates", [[[78.7844, 9.8227]]])[0][0]
+    terrain_data = terrain_engine.analyze_parcel_terrain(
+        lat=coords[1],
+        lng=coords[0],
+        district=doc_data.get("district", "Ramanathapuram"),
+        taluk=doc_data.get("taluk", "R.S. Mangalam")
+    )
+
     return {
         "pipeline_status": "SUCCESS",
         "sample_id": sample_id,
         "ocr_extracted": doc_data,
         "fmb_parsed": fmb_data,
         "reconciliation": reconciliation,
-        "risk_assessment": risk_evaluation
+        "risk_assessment": risk_evaluation,
+        "terrain_analysis": terrain_data
     }
 
 @app.post("/api/analyze/text")
@@ -124,12 +136,23 @@ def analyze_raw_text(payload: TextAnalysisRequest):
     # 4. Title Integrity & Risk Assessment
     risk_evaluation = risk_analyzer.evaluate_risk(reconciliation)
 
+    # 5. Raster DEM & Terrain Analysis
+    cad_parcel = reconciliation.get("cadastral_parcel", {})
+    coords = cad_parcel.get("geometry", {}).get("coordinates", [[[78.7844, 9.8227]]])[0][0]
+    terrain_data = terrain_engine.analyze_parcel_terrain(
+        lat=coords[1],
+        lng=coords[0],
+        district=doc_data.get("district", "Ramanathapuram"),
+        taluk=doc_data.get("taluk", "R.S. Mangalam")
+    )
+
     return {
         "pipeline_status": "SUCCESS",
         "ocr_extracted": doc_data,
         "fmb_parsed": fmb_data,
         "reconciliation": reconciliation,
-        "risk_assessment": risk_evaluation
+        "risk_assessment": risk_evaluation,
+        "terrain_analysis": terrain_data
     }
 
 @app.post("/api/analyze/upload")
@@ -154,6 +177,16 @@ async def analyze_uploaded_document(
     # 4. Title Integrity & Risk Assessment
     risk_evaluation = risk_analyzer.evaluate_risk(reconciliation)
 
+    # 5. Raster DEM & Terrain Analysis
+    cad_parcel = reconciliation.get("cadastral_parcel", {})
+    coords = cad_parcel.get("geometry", {}).get("coordinates", [[[78.7844, 9.8227]]])[0][0]
+    terrain_data = terrain_engine.analyze_parcel_terrain(
+        lat=coords[1],
+        lng=coords[0],
+        district=doc_data.get("district", "Ramanathapuram"),
+        taluk=doc_data.get("taluk", "R.S. Mangalam")
+    )
+
     return {
         "pipeline_status": "SUCCESS",
         "file_uploaded": filename,
@@ -161,8 +194,22 @@ async def analyze_uploaded_document(
         "ocr_extracted": doc_data,
         "fmb_parsed": fmb_data,
         "reconciliation": reconciliation,
-        "risk_assessment": risk_evaluation
+        "risk_assessment": risk_evaluation,
+        "terrain_analysis": terrain_data
     }
+
+@app.get("/api/terrain/{survey_no:path}")
+def get_terrain_elevation(survey_no: str):
+    """Retrieves DEM elevation, slope, and flood vulnerability for a survey parcel."""
+    parcel = spatial_engine.find_cadastral_parcel(survey_no)
+    lat, lng = 9.8227, 78.7844
+    district, taluk = "Ramanathapuram", "R.S. Mangalam"
+    if parcel:
+        coords = parcel.get("geometry", {}).get("coordinates", [[[78.7844, 9.8227]]])[0][0]
+        lng, lat = coords[0], coords[1]
+        district = parcel.get("properties", {}).get("district", "Ramanathapuram")
+        taluk = parcel.get("properties", {}).get("taluk", "R.S. Mangalam")
+    return terrain_engine.analyze_parcel_terrain(lat, lng, district, taluk)
 
 @app.get("/api/report/{survey_no:path}")
 def generate_audit_certificate(survey_no: str):
