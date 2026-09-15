@@ -1,0 +1,137 @@
+[
+  {
+    "id": "DOC-SAMPLE-01",
+    "title": "Patta Extract - Clear Title Benchmark (Survey 102/1A)",
+    "doc_type": "Patta / Chitta (Form e-Patta)",
+    "survey_no": "102/1A",
+    "patta_no": "8841",
+    "owner": "K. R. Ramanathan & R. Meenakshi",
+    "village": "Perungudi",
+    "taluk": "Sholinganallur",
+    "district": "Chennai",
+    "documented_area": {
+      "hectares": 0.4856,
+      "acres": 1.2,
+      "cents": 120.0,
+      "sqm": 4856.23
+    },
+    "land_classification": "Ryotwari Dry (Punjai)",
+    "boundaries": {
+      "north": "Survey No. 102/1B",
+      "south": "Village Road (Judges Colony)",
+      "east": "Survey No. 103/2",
+      "west": "Survey No. 101/4"
+    },
+    "raw_text": "GOVERNMENT OF TAMIL NADU - REVENUE DEPARTMENT\nE-PATTA / CHITTA EXTRACT (FORM 10)\nDistrict: Chennai | Taluk: Sholinganallur | Village: Perungudi\nPatta Number: 8841 | Sub-division Year: 2024\nPattadar Name: 1. K. R. Ramanathan, 2. R. Meenakshi\nSurvey Number: 102 | Sub-Division: 1A\nLand Type: Ryotwari Dry (Punjai) | Assessment: Rs. 14.50\nExtent: 0 Hectares 48.56 Ares (Equivalent to 1.20 Acres / 120 Cents)\nBoundaries:\n  North by: Survey No. 102/1B (S. Sundaravalli)\n  South by: Village Road\n  East by: Survey No. 103/2\n  West by: Survey No. 101/4\nRemarks: Clean Title, No encumbrances recorded in e-Sevai database. Certified Digitally by Tahsildar.",
+    "scenario_tag": "VERIFIED_CLEAN",
+    "expected_risk": "LOW"
+  },
+  {
+    "id": "DOC-SAMPLE-02",
+    "title": "Sale Deed - Severe Area Discrepancy (Survey 104/2B)",
+    "doc_type": "Registered Sale Deed (Doc No. 3412/2023)",
+    "survey_no": "104/2B",
+    "patta_no": "1109",
+    "owner": "V. Jayaprakash",
+    "village": "Perungudi",
+    "taluk": "Sholinganallur",
+    "district": "Chennai",
+    "documented_area": {
+      "hectares": 0.7486,
+      "acres": 1.85,
+      "cents": 185.0,
+      "sqm": 7486.68
+    },
+    "land_classification": "Ryotwari Wet (Nanjai)",
+    "boundaries": {
+      "north": "Survey No. 104/1",
+      "south": "Survey No. 105/1",
+      "east": "Survey No. 104/2C",
+      "west": "Survey No. 104/2A"
+    },
+    "raw_text": "SUB-REGISTRAR OFFICE PERUNGUDI - REGISTERED DEED OF SALE\nDoc No: 3412 of 2023 | Date: 18th October 2023\nPurchaser: V. Jayaprakash S/o Varadarajan\nVendor: T. Subramaniam\nProperty Schedule:\nAll that piece and parcel of Agricultural Land situated at Perungudi Village, Sholinganallur Taluk, Chennai District.\nComprised in Survey No. 104/2B, Patta No. 1109.\nMeasuring an Extent of 1 Acre 85 Cents (1.85 Acres / 7,486.68 Sq.Mtrs / 80,586 Sq.Ft).\nBoundaries:\n  North by: Land in Survey No. 104/1\n  South by: Land in Survey No. 105/1\n  East by: Land in Survey No. 104/2C\n  West by: Land in Survey No. 104/2A\nNote: Cadastral Survey records show only 1.42 Acres. Document claims 1.85 Acres (Excess of 0.43 Acres).",
+    "scenario_tag": "AREA_DISCREPANCY",
+    "expected_risk": "HIGH"
+  },
+  {
+    "id": "DOC-SAMPLE-03",
+    "title": "Adangal & Patta - Waterbody Encroachment (Survey 108/3)",
+    "doc_type": "Patta Extract & Adangal Register",
+    "survey_no": "108/3",
+    "patta_no": "4091",
+    "owner": "M/s Greenfield Logistics Infrastructure",
+    "village": "Perungudi",
+    "taluk": "Sholinganallur",
+    "district": "Chennai",
+    "documented_area": {
+      "hectares": 0.8093,
+      "acres": 2.0,
+      "cents": 200.0,
+      "sqm": 8093.71
+    },
+    "land_classification": "Commercial / Dry Land",
+    "boundaries": {
+      "north": "Survey No. 108/2",
+      "south": "Perungudi Eri (Lake Boundary)",
+      "east": "Survey No. 109/1",
+      "west": "Survey No. 108/4"
+    },
+    "raw_text": "GOVERNMENT OF TAMIL NADU - ADANGAL / PATTA RECORD\nDistrict: Chennai | Taluk: Sholinganallur | Village: Perungudi\nPatta No: 4091 | Survey No: 108/3\nRegistered Entity: M/s Greenfield Logistics Infrastructure\nExtent: 2.00 Acres (0.80.93 Hectares)\nClassification: Commercial / Dry Land\nBoundaries:\n  North by: Survey No. 108/2\n  South by: Perungudi Eri Poramboke / Lake Foreshore\n  East by: Survey No. 109/1\n  West by: Survey No. 108/4\nCRITICAL AUDIT NOTE: Southern 0.37 Acres extends directly inside the 30m statutory buffer zone of Perungudi Lake (Waterbody Encroachment).",
+    "scenario_tag": "WATERBODY_ENCROACHMENT",
+    "expected_risk": "CRITICAL"
+  },
+  {
+    "id": "DOC-SAMPLE-04",
+    "title": "Patta Record - Road Right-of-Way Corridor Encroachment (Survey 110/1A)",
+    "doc_type": "Patta Transfer Order",
+    "survey_no": "110/1A",
+    "patta_no": "5512",
+    "owner": "A. Balakrishnan & Sons",
+    "village": "Perungudi",
+    "taluk": "Sholinganallur",
+    "district": "Chennai",
+    "documented_area": {
+      "hectares": 0.425,
+      "acres": 1.05,
+      "cents": 105.0,
+      "sqm": 4250.0
+    },
+    "land_classification": "Commercial / Mixed",
+    "boundaries": {
+      "north": "Rajiv Gandhi Salai / OMR Highway",
+      "south": "Survey No. 110/1B",
+      "east": "Survey No. 111/1",
+      "west": "Survey No. 109/4"
+    },
+    "raw_text": "REVENUE DIVISIONAL OFFICER - PATTA TRANSFER ORDER\nDistrict: Chennai | Taluk: Sholinganallur | Village: Perungudi\nPatta No: 5512 | Survey No: 110/1A\nPattadar: A. Balakrishnan & Sons\nExtent: 1.05 Acres (4,250 Sq.M)\nBoundaries:\n  North by: Old Mahabalipuram Road (OMR / Rajiv Gandhi Salai)\n  South by: Survey No. 110/1B\n  East by: Survey No. 111/1\n  West by: Survey No. 109/4\nHIGHWAY AUDIT: The northern parcel boundary infringes by 4.5 meters into the 45m State Highway RoW corridor.",
+    "scenario_tag": "ROAD_ROW_ENCROACHMENT",
+    "expected_risk": "HIGH"
+  },
+  {
+    "id": "DOC-SAMPLE-05",
+    "title": "FMB Discrepancy & Boundary Shift (Survey 112/1)",
+    "doc_type": "Field Measurement Book Extract & Patta",
+    "survey_no": "112/1",
+    "patta_no": "7721",
+    "owner": "G. Murugan",
+    "village": "Perungudi",
+    "taluk": "Sholinganallur",
+    "district": "Chennai",
+    "documented_area": {
+      "hectares": 0.607,
+      "acres": 1.5,
+      "cents": 150.0,
+      "sqm": 6070.28
+    },
+    "land_classification": "Ryotwari Wet (Nanjai)",
+    "boundaries": {
+      "north": "Survey No. 112/2",
+      "south": "Survey No. 111/3",
+      "east": "Survey No. 113/1",
+      "west": "Survey No. 112/3"
+    },
+    "raw_text": "GOVERNMENT OF TAMIL NADU - SURVEY & SETTLEMENT DEPARTMENT\nFMB SKETCH & PATTA AUDIT RECORD\nSurvey No: 112/1 | Patta: 7721\nOwner: G. Murugan\nArea Claimed: 1.50 Acres (6,070.28 Sq.M)\nBoundaries:\n  North by: Survey No. 112/2\n  South by: Survey No. 111/3\n  East by: Survey No. 113/1\n  West by: Survey No. 112/3\nFMB AUDIT NOTE: Eastern boundary stone coordinates in FMB ladder calculation do not match digitized Cadastral GIS layer (Shape skew detected). FMB area calculates to 1.349 Acres while Cadastral layer shows 1.50 Acres.",
+    "scenario_tag": "FMB_BOUNDARY_MISMATCH",
+    "expected_risk": "MEDIUM"
+  }
+]
