@@ -26,10 +26,23 @@ class SpatialCadastralEngine:
             self.parcels_by_survey[s_no] = feature
 
     def _load_json(self, filename: str) -> Dict[str, Any]:
-        path = os.path.join(DATA_DIR, filename)
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                return json.load(f)
+        """Loads a GeoJSON or JSON file checking both DATA_DIR and Geospatial_Layer folder with .geojson/.json support."""
+        base_name = os.path.splitext(filename)[0]
+        candidates = [
+            os.path.join(DATA_DIR, filename),
+            os.path.join(DATA_DIR, "Geospatial_Layer", filename),
+            os.path.join(DATA_DIR, f"{base_name}.geojson"),
+            os.path.join(DATA_DIR, "Geospatial_Layer", f"{base_name}.geojson"),
+            os.path.join(DATA_DIR, f"{base_name}.json"),
+            os.path.join(DATA_DIR, "Geospatial_Layer", f"{base_name}.json")
+        ]
+        for path in candidates:
+            if os.path.exists(path):
+                try:
+                    with open(path, "r", encoding="utf-8") as f:
+                        return json.load(f)
+                except Exception as e:
+                    print(f"Error loading {path}: {e}")
         return {"type": "FeatureCollection", "features": []}
 
     def get_all_parcels(self) -> Dict[str, Any]:
