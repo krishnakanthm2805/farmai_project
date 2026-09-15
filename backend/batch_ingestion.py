@@ -45,8 +45,21 @@ class BatchIngestionEngine:
                     with open(target_path, "wb") as f:
                         f.write(file_data)
                     
+                    # Determine statutory document category from subfolder or filename
+                    category = "LA_Patta_Document"
+                    path_lower = file_info.filename.lower()
+                    if "patta" in path_lower or "la_" in path_lower:
+                        category = "LA_Patta_Document"
+                    elif "lps" in path_lower or "plan" in path_lower or "schedule" in path_lower:
+                        category = "Land_Plan_Schedule_LPS"
+                    elif "administrative" in path_lower or "sanction" in path_lower or "as" in path_lower:
+                        category = "Administrative_Sanction_AS"
+                    elif "government" in path_lower or "order" in path_lower or "go" in path_lower:
+                        category = "Government_Order_GO"
+
                     # Run Multimodal OCR
-                    doc_data = ocr_engine.extract_from_file_bytes(file_data, filename)
+                    doc_data = ocr_engine.extract_from_file_bytes(file_data, filename, category)
+                    doc_data["doc_category"] = category
                     survey_no = doc_data.get("full_survey_ref") or doc_data.get("survey_no") or "102/3A"
                     
                     # Compute FMB, Spatial reconciliation, Terrain & Risk
@@ -54,17 +67,18 @@ class BatchIngestionEngine:
                     reconciliation = spatial_engine.reconcile_land_record(doc_data, fmb_data)
                     risk_evaluation = risk_analyzer.evaluate_risk(reconciliation)
                     
-                    coords = reconciliation.get("cadastral_parcel", {}).get("geometry", {}).get("coordinates", [[[78.7844, 9.8227]]])[0][0]
+                    lat, lng = spatial_engine.extract_centroid_lat_lng(reconciliation.get("cadastral_parcel", {}).get("geometry", {}))
                     terrain_data = terrain_engine.analyze_parcel_terrain(
-                        lat=coords[1],
-                        lng=coords[0],
-                        district=doc_data.get("district", "Ramanathapuram"),
-                        taluk=doc_data.get("taluk", "R.S. Mangalam")
+                        lat=lat,
+                        lng=lng,
+                        district=doc_data.get("district", "Thoothukudi"),
+                        taluk=doc_data.get("taluk", "Thoothukudi")
                     )
                     
                     processed_docs.append({
                         "filename": filename,
                         "relative_path": file_info.filename,
+                        "category": category,
                         "file_size_bytes": len(file_data),
                         "survey_no": survey_no,
                         "ocr_extracted": doc_data,
@@ -123,22 +137,35 @@ class BatchIngestionEngine:
                         with open(file_path, "rb") as fp:
                             file_data = fp.read()
                         
-                        doc_data = ocr_engine.extract_from_file_bytes(file_data, f)
+                        category = "LA_Patta_Document"
+                        path_lower = root.lower()
+                        if "patta" in path_lower or "la_" in path_lower:
+                            category = "LA_Patta_Document"
+                        elif "lps" in path_lower or "plan" in path_lower or "schedule" in path_lower:
+                            category = "Land_Plan_Schedule_LPS"
+                        elif "administrative" in path_lower or "sanction" in path_lower or "as" in path_lower:
+                            category = "Administrative_Sanction_AS"
+                        elif "government" in path_lower or "order" in path_lower or "go" in path_lower:
+                            category = "Government_Order_GO"
+
+                        doc_data = ocr_engine.extract_from_file_bytes(file_data, f, category)
+                        doc_data["doc_category"] = category
                         survey_no = doc_data.get("full_survey_ref") or doc_data.get("survey_no") or "102/3A"
                         fmb_data = fmb_engine.calculate_fmb_polygon(survey_no)
                         reconciliation = spatial_engine.reconcile_land_record(doc_data, fmb_data)
                         risk_evaluation = risk_analyzer.evaluate_risk(reconciliation)
 
-                        coords = reconciliation.get("cadastral_parcel", {}).get("geometry", {}).get("coordinates", [[[78.7844, 9.8227]]])[0][0]
+                        lat, lng = spatial_engine.extract_centroid_lat_lng(reconciliation.get("cadastral_parcel", {}).get("geometry", {}))
                         terrain_data = terrain_engine.analyze_parcel_terrain(
-                            lat=coords[1],
-                            lng=coords[0],
-                            district=doc_data.get("district", "Ramanathapuram"),
-                            taluk=doc_data.get("taluk", "R.S. Mangalam")
+                            lat=lat,
+                            lng=lng,
+                            district=doc_data.get("district", "Thoothukudi"),
+                            taluk=doc_data.get("taluk", "Thoothukudi")
                         )
 
                         processed_docs.append({
                             "filename": f,
+                            "category": category,
                             "survey_no": survey_no,
                             "ocr_extracted": doc_data,
                             "reconciliation": reconciliation,
