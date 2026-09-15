@@ -2,10 +2,52 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON, CircleMarker, Popup, useMap } from 'react-leaflet';
 import { Layers, Compass, Plus, Minus, Crosshair, MapPin } from 'lucide-react';
 
+// Helper to safely compute [lat, lng] centroid from Polygon, MultiPolygon, or nested array
+function getGeometryCentroid(geom, fallback = [8.7826, 78.0267]) {
+  if (!geom || !geom.coordinates) return fallback;
+
+  const points = [];
+  function extract(coords) {
+    if (!Array.isArray(coords)) return;
+    if (coords.length >= 2 && typeof coords[0] === 'number' && typeof coords[1] === 'number') {
+      const lng = Number(coords[0]);
+      const lat = Number(coords[1]);
+      if (!isNaN(lat) && !isNaN(lng) && isFinite(lat) && isFinite(lng)) {
+        points.push([lat, lng]);
+      }
+      return;
+    }
+    for (const item of coords) {
+      extract(item);
+    }
+  }
+
+  extract(geom.coordinates);
+  if (points.length === 0) return fallback;
+
+  let sumLat = 0;
+  let sumLng = 0;
+  for (const [lat, lng] of points) {
+    sumLat += lat;
+    sumLng += lng;
+  }
+  return [sumLat / points.length, sumLng / points.length];
+}
+
 function MapAutoCentering({ centerCoords }) {
   const map = useMap();
   useEffect(() => {
-    if (centerCoords) {
+    if (
+      centerCoords &&
+      Array.isArray(centerCoords) &&
+      centerCoords.length === 2 &&
+      typeof centerCoords[0] === 'number' &&
+      typeof centerCoords[1] === 'number' &&
+      !isNaN(centerCoords[0]) &&
+      !isNaN(centerCoords[1]) &&
+      isFinite(centerCoords[0]) &&
+      isFinite(centerCoords[1])
+    ) {
       map.flyTo(centerCoords, 16, { duration: 1.2 });
     }
   }, [centerCoords, map]);
@@ -15,11 +57,11 @@ function MapAutoCentering({ centerCoords }) {
 export default function GisMap({
   cadastralData,
   referenceLayers,
-  selectedSurveyNo = '102/3A',
+  selectedSurveyNo = '384',
   reconciliationData,
   onSelectParcel
 }) {
-  const [mapMode, setMapMode] = useState('satellite'); // 'map' | 'satellite' | 'hybrid'
+  const [mapMode, setMapMode] = useState('satellite'); // 'map' | 'satellite' | 'hybrid' | 'terrain'
 
   const tileUrls = {
     satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -28,52 +70,50 @@ export default function GisMap({
     terrain: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
   };
 
-  // Calculate true polygon centroid for accurate flyTo and center
-  let centerPosition = [9.8227, 78.7844];
-  if (reconciliationData?.cadastral_parcel?.geometry?.coordinates?.[0]?.[0]) {
-    const coords = reconciliationData.cadastral_parcel.geometry.coordinates[0];
-    const avgLat = coords.reduce((sum, pt) => sum + pt[1], 0) / coords.length;
-    const avgLng = coords.reduce((sum, pt) => sum + pt[0], 0) / coords.length;
-    centerPosition = [avgLat, avgLng];
+  // Safely calculate centroid for any geometry type (Polygon or MultiPolygon)
+  let centerPosition = [8.7826, 78.0267]; // Default to Thoothukudi study area
+  if (reconciliationData?.cadastral_parcel?.geometry) {
+    centerPosition = getGeometryCentroid(reconciliationData.cadastral_parcel.geometry, [8.7826, 78.0267]);
   } else if (cadastralData?.features?.length > 0) {
     const feat = cadastralData.features.find(
-      (f) => f.properties.survey_no === selectedSurveyNo || f.properties.survey_no.replace('/', '-') === selectedSurveyNo.replace('/', '-')
+      (f) => String(f.properties?.survey_no).trim() === String(selectedSurveyNo).trim() ||
+             String(f.properties?.survey_no).replace('/', '-') === String(selectedSurveyNo).replace('/', '-')
     ) || cadastralData.features[0];
-    if (feat?.geometry?.coordinates?.[0]?.[0]) {
-      const coords = feat.geometry.coordinates[0];
-      const avgLat = coords.reduce((sum, pt) => sum + pt[1], 0) / coords.length;
-      const avgLng = coords.reduce((sum, pt) => sum + pt[0], 0) / coords.length;
-      centerPosition = [avgLat, avgLng];
+    if (feat?.geometry) {
+      centerPosition = getGeometryCentroid(feat.geometry, [8.7826, 78.0267]);
     }
   }
 
-  const currentTaluk = reconciliationData?.cadastral_parcel?.taluk || 'R.S. Mangalam';
-  const currentDistrict = reconciliationData?.cadastral_parcel?.district || 'Ramanathapuram';
-  const currentVillage = reconciliationData?.cadastral_parcel?.village || 'Rajasingamangalam';
+  const currentTaluk = reconciliationData?.cadastral_parcel?.taluk || 'Thoothukudi';
+  const currentDistrict = reconciliationData?.cadastral_parcel?.district || 'Thoothukudi';
+  const currentVillage = reconciliationData?.cadastral_parcel?.village || 'Keelathattaparai';
+
+  const baseLat = typeof centerPosition[0] === 'number' && !isNaN(centerPosition[0]) ? centerPosition[0] : 8.7826;
+  const baseLng = typeof centerPosition[1] === 'number' && !isNaN(centerPosition[1]) ? centerPosition[1] : 78.0267;
 
   // Landmarks around the active center
   const landmarks = [
     {
       id: 'lm-taluk',
       name: `${currentTaluk} Taluk & SRO Office`,
-      lat: centerPosition[0] + 0.0018,
-      lng: centerPosition[1] + 0.0015,
+      lat: baseLat + 0.0018,
+      lng: baseLng + 0.0015,
       type: 'GOVERNMENT',
       icon: '🏛️'
     },
     {
       id: 'lm-water',
-      name: `${currentVillage} Kanmoi / Water Reservoir`,
-      lat: centerPosition[0] + 0.0022,
-      lng: centerPosition[1] - 0.0012,
+      name: `${currentVillage} Water Tank / Kanmoi`,
+      lat: baseLat + 0.0022,
+      lng: baseLng - 0.0012,
       type: 'WATERBODY',
       icon: '🌊'
     },
     {
       id: 'lm-junction',
       name: `${currentVillage} Panchayat Road Junction`,
-      lat: centerPosition[0] - 0.0012,
-      lng: centerPosition[1] + 0.0010,
+      lat: baseLat - 0.0012,
+      lng: baseLng + 0.0010,
       type: 'ROAD',
       icon: '🛣️'
     }
@@ -264,7 +304,7 @@ export default function GisMap({
           ))}
 
           {/* Landmark Pins */}
-          {landmarks.map((lm) => (
+          {landmarks.filter(lm => typeof lm.lat === 'number' && typeof lm.lng === 'number' && !isNaN(lm.lat) && !isNaN(lm.lng) && isFinite(lm.lat) && isFinite(lm.lng)).map((lm) => (
             <CircleMarker
               key={lm.id}
               center={[lm.lat, lm.lng]}
