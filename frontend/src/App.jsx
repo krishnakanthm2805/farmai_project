@@ -121,22 +121,50 @@ export default function App() {
       formData.append('file', file);
       formData.append('doc_type', 'Patta / Deed');
 
-      const res = await fetch('/api/analyze/upload', {
+      const isZip = file.name.toLowerCase().endsWith('.zip');
+      const endpoint = isZip ? '/api/batch/upload-zip' : '/api/analyze/upload';
+
+      const res = await fetch(endpoint, {
         method: 'POST',
         body: formData
       });
       if (res.ok) {
         const data = await res.json();
-        setAnalysisResult(data);
-        if (data.reconciliation?.survey_no) {
-          setSelectedSurveyNo(data.reconciliation.survey_no);
+        
+        if (isZip && data.documents?.length > 0) {
+          // Take first document as active display
+          const firstDoc = data.documents[0];
+          setAnalysisResult({
+            pipeline_status: 'SUCCESS',
+            ocr_extracted: firstDoc.ocr_extracted,
+            reconciliation: firstDoc.reconciliation,
+            risk_assessment: firstDoc.risk_assessment,
+            terrain_analysis: firstDoc.terrain_analysis
+          });
+          if (firstDoc.survey_no) {
+            setSelectedSurveyNo(firstDoc.survey_no);
+          }
+        } else {
+          setAnalysisResult(data);
+          if (data.reconciliation?.survey_no) {
+            setSelectedSurveyNo(data.reconciliation.survey_no);
+          }
         }
+
         // Refresh cadastral GeoJSON
         const cadRes = await fetch('/api/cadastral/parcels');
         if (cadRes.ok) {
           const cadJson = await cadRes.json();
           setCadastralData(cadJson);
         }
+
+        // Refresh samples list
+        const samplesRes = await fetch('/api/samples');
+        if (samplesRes.ok) {
+          const samplesJson = await samplesRes.json();
+          setSampleDocs(samplesJson);
+        }
+
         setActiveNav('dashboard');
       }
     } catch (err) {

@@ -14,6 +14,7 @@ from backend.fmb_parser import fmb_engine
 from backend.spatial_engine import spatial_engine
 from backend.risk_analyzer import risk_analyzer
 from backend.terrain_engine import terrain_engine
+from backend.batch_ingestion import batch_engine
 
 app = FastAPI(
     title="FarmAI GeoLand Intelligence API",
@@ -210,6 +211,22 @@ def get_terrain_elevation(survey_no: str):
         district = parcel.get("properties", {}).get("district", "Ramanathapuram")
         taluk = parcel.get("properties", {}).get("taluk", "R.S. Mangalam")
     return terrain_engine.analyze_parcel_terrain(lat, lng, district, taluk)
+
+@app.post("/api/batch/upload-zip")
+async def upload_and_process_zip(file: UploadFile = File(...)):
+    """Accepts a ZIP bundle containing subfolders of PDFs, images, and GeoJSON files, extracting and processing all."""
+    contents = await file.read()
+    filename = file.filename or "bundle.zip"
+    if not filename.lower().endswith(".zip"):
+        raise HTTPException(status_code=400, detail="File must be a valid .zip archive")
+    
+    result = batch_engine.process_zip_bytes(contents)
+    return result
+
+@app.post("/api/batch/scan-folders")
+def scan_and_index_dataset_folders():
+    """Scans backend/data/Land_documents and Geospatial_Layer on disk, runs OCR and spatial registration for all files."""
+    return batch_engine.scan_and_ingest_folders()
 
 @app.get("/api/report/{survey_no:path}")
 def generate_audit_certificate(survey_no: str):
