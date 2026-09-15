@@ -103,12 +103,12 @@ def analyze_sample(sample_id: str):
 
     # 5. Raster DEM & Terrain Analysis (Elevation, Slope, Flood Risk)
     cad_parcel = reconciliation.get("cadastral_parcel", {})
-    coords = cad_parcel.get("geometry", {}).get("coordinates", [[[78.7844, 9.8227]]])[0][0]
+    lat, lng = spatial_engine.extract_centroid_lat_lng(cad_parcel.get("geometry", {}))
     terrain_data = terrain_engine.analyze_parcel_terrain(
-        lat=coords[1],
-        lng=coords[0],
-        district=doc_data.get("district", "Ramanathapuram"),
-        taluk=doc_data.get("taluk", "R.S. Mangalam")
+        lat=lat,
+        lng=lng,
+        district=doc_data.get("district", "Thoothukudi"),
+        taluk=doc_data.get("taluk", "Thoothukudi")
     )
 
     return {
@@ -139,12 +139,12 @@ def analyze_raw_text(payload: TextAnalysisRequest):
 
     # 5. Raster DEM & Terrain Analysis
     cad_parcel = reconciliation.get("cadastral_parcel", {})
-    coords = cad_parcel.get("geometry", {}).get("coordinates", [[[78.7844, 9.8227]]])[0][0]
+    lat, lng = spatial_engine.extract_centroid_lat_lng(cad_parcel.get("geometry", {}))
     terrain_data = terrain_engine.analyze_parcel_terrain(
-        lat=coords[1],
-        lng=coords[0],
-        district=doc_data.get("district", "Ramanathapuram"),
-        taluk=doc_data.get("taluk", "R.S. Mangalam")
+        lat=lat,
+        lng=lng,
+        district=doc_data.get("district", "Thoothukudi"),
+        taluk=doc_data.get("taluk", "Thoothukudi")
     )
 
     return {
@@ -180,12 +180,12 @@ async def analyze_uploaded_document(
 
     # 5. Raster DEM & Terrain Analysis
     cad_parcel = reconciliation.get("cadastral_parcel", {})
-    coords = cad_parcel.get("geometry", {}).get("coordinates", [[[78.7844, 9.8227]]])[0][0]
+    lat, lng = spatial_engine.extract_centroid_lat_lng(cad_parcel.get("geometry", {}))
     terrain_data = terrain_engine.analyze_parcel_terrain(
-        lat=coords[1],
-        lng=coords[0],
-        district=doc_data.get("district", "Ramanathapuram"),
-        taluk=doc_data.get("taluk", "R.S. Mangalam")
+        lat=lat,
+        lng=lng,
+        district=doc_data.get("district", "Thoothukudi"),
+        taluk=doc_data.get("taluk", "Thoothukudi")
     )
 
     return {
@@ -203,13 +203,12 @@ async def analyze_uploaded_document(
 def get_terrain_elevation(survey_no: str):
     """Retrieves DEM elevation, slope, and flood vulnerability for a survey parcel."""
     parcel = spatial_engine.find_cadastral_parcel(survey_no)
-    lat, lng = 9.8227, 78.7844
-    district, taluk = "Ramanathapuram", "R.S. Mangalam"
+    lat, lng = 8.7826, 78.0267
+    district, taluk = "Thoothukudi", "Thoothukudi"
     if parcel:
-        coords = parcel.get("geometry", {}).get("coordinates", [[[78.7844, 9.8227]]])[0][0]
-        lng, lat = coords[0], coords[1]
-        district = parcel.get("properties", {}).get("district", "Ramanathapuram")
-        taluk = parcel.get("properties", {}).get("taluk", "R.S. Mangalam")
+        lat, lng = spatial_engine.extract_centroid_lat_lng(parcel.get("geometry", {}))
+        district = parcel.get("properties", {}).get("district", "Thoothukudi")
+        taluk = parcel.get("properties", {}).get("taluk", "Thoothukudi")
     return terrain_engine.analyze_parcel_terrain(lat, lng, district, taluk)
 
 @app.post("/api/batch/upload-zip")
