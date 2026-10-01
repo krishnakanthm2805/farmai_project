@@ -85,6 +85,12 @@ export default function Navbar({ activeTab, setActiveTab, onOpenUpload, onOpenAu
 
         {/* Right-side Action Bar */}
         <div className="flex items-center gap-2.5">
+          {/* AWS Cloud Badge */}
+          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-mono shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>AWS Mumbai • Team 63</span>
+          </div>
+
           {getScoreBadge()}
 
           <button

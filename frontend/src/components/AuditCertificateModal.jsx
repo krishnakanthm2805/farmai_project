@@ -17,7 +17,7 @@ export default function AuditCertificateModal({ isOpen, onClose, reconciliationD
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
       <div className="w-full max-w-3xl border border-slate-700/80 bg-slate-900 shadow-2xl overflow-hidden rounded-2xl my-8">
         {/* Modal Controls Header */}
         <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between no-print bg-slate-950/80">

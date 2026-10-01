@@ -140,16 +140,20 @@ class SpatialCadastralEngine:
             return (8.7826, 78.0267)
 
     def _load_json(self, filename: str) -> Dict[str, Any]:
-        """Loads a GeoJSON or JSON file checking both DATA_DIR and Geospatial_Layer folder with .geojson/.json support."""
+        """Loads a GeoJSON or JSON file checking DATA_DIR, Geospatial_Layer, and any subfolders (e.g. Additinal)."""
         base_name = os.path.splitext(filename)[0]
         candidates = [
             os.path.join(DATA_DIR, filename),
             os.path.join(DATA_DIR, "Geospatial_Layer", filename),
+            os.path.join(DATA_DIR, "Geospatial_Layer", "Additinal", filename),
             os.path.join(DATA_DIR, f"{base_name}.geojson"),
             os.path.join(DATA_DIR, "Geospatial_Layer", f"{base_name}.geojson"),
+            os.path.join(DATA_DIR, "Geospatial_Layer", "Additinal", f"{base_name}.geojson"),
             os.path.join(DATA_DIR, f"{base_name}.json"),
-            os.path.join(DATA_DIR, "Geospatial_Layer", f"{base_name}.json")
+            os.path.join(DATA_DIR, "Geospatial_Layer", f"{base_name}.json"),
+            os.path.join(DATA_DIR, "Geospatial_Layer", "Additinal", f"{base_name}.json")
         ]
+        # Also do a quick recursive walk in DATA_DIR if still not in candidates
         for path in candidates:
             if os.path.exists(path):
                 try:
@@ -157,6 +161,16 @@ class SpatialCadastralEngine:
                         return json.load(f)
                 except Exception as e:
                     print(f"Error loading {path}: {e}")
+        
+        # Fallback recursive search
+        for root, _, files in os.walk(DATA_DIR):
+            if filename in files:
+                try:
+                    with open(os.path.join(root, filename), "r", encoding="utf-8") as f:
+                        return json.load(f)
+                except Exception as e:
+                    print(f"Error loading {filename} from {root}: {e}")
+
         return {"type": "FeatureCollection", "features": []}
 
     def get_all_parcels(self) -> Dict[str, Any]:
@@ -311,7 +325,7 @@ class SpatialCadastralEngine:
 
     def reconcile_land_record(self, doc_data: Dict[str, Any], fmb_data: Dict[str, Any]) -> Dict[str, Any]:
         """Performs full 3-way reconciliation (Document vs Cadastral GIS vs FMB)."""
-        survey_no = doc_data.get("full_survey_ref") or doc_data.get("survey_no") or "102/3A"
+        survey_no = doc_data.get("full_survey_ref") or doc_data.get("survey_no") or "384"
         cadastral_feature = self.find_cadastral_parcel(survey_no)
         
         if not cadastral_feature:
@@ -325,6 +339,13 @@ class SpatialCadastralEngine:
             taluk_key = (doc_data.get("taluk") or "").lower()
             # Check taluks first for hyper-local pin, then fallback to district
             taluk_coords = {
+                "keelathattaparai": (8.7826, 78.0267),
+                "peroorani": (8.7826, 78.0091),
+                "umarikottai": (8.7990, 77.9970),
+                "melathattaparai": (8.7930, 78.0060),
+                "thoothukudi": (8.7826, 78.0267),
+                "தூத்துக்குடி": (8.7826, 78.0267),
+                "tuticorin": (8.7826, 78.0267),
                 "r.s. mangalam": (9.8227, 78.7844),
                 "rajasingamangalam": (9.8227, 78.7844),
                 "சிங்கமங்கலம்": (9.8227, 78.7844),
@@ -338,21 +359,80 @@ class SpatialCadastralEngine:
                 "perungudi": (12.9600, 80.2402)
             }
             dist_coords = {
+                "thoothukudi": (8.7826, 78.0267),
+                "தூத்துக்குடி": (8.7826, 78.0267),
+                "tuticorin": (8.7826, 78.0267),
                 "ramanathapuram": (9.3639, 78.8395),
                 "இராமநாதபுரம்": (9.3639, 78.8395),
                 "ராமநாதபுரம்": (9.3639, 78.8395),
                 "madurai": (9.9252, 78.1198),
-                "chennai": (12.9600, 80.2402),
+                "மதுரை": (9.9252, 78.1198),
+                "chennai": (13.0827, 80.2707),
+                "சென்னை": (13.0827, 80.2707),
                 "coimbatore": (11.0168, 76.9558),
+                "கோவை": (11.0168, 76.9558),
+                "கோயம்புத்தூர்": (11.0168, 76.9558),
                 "tiruchirappalli": (10.7905, 78.7047),
+                "trichy": (10.7905, 78.7047),
+                "திருச்சிராப்பள்ளி": (10.7905, 78.7047),
                 "salem": (11.6643, 78.1460),
+                "சேலம்": (11.6643, 78.1460),
                 "thanjavur": (10.7870, 79.1378),
+                "தஞ்சாவூர்": (10.7870, 79.1378),
                 "tirunelveli": (8.7139, 77.7567),
+                "திருநெல்வேலி": (8.7139, 77.7567),
                 "sivaganga": (9.8433, 78.4809),
-                "virudhunagar": (9.5680, 77.9624)
+                "சிவகங்கை": (9.8433, 78.4809),
+                "virudhunagar": (9.5680, 77.9624),
+                "விருதுநகர்": (9.5680, 77.9624),
+                "dindigul": (10.3673, 77.9803),
+                "திண்டுக்கல்": (10.3673, 77.9803),
+                "theni": (10.0104, 77.4768),
+                "தேனி": (10.0104, 77.4768),
+                "kanchipuram": (12.8342, 79.7036),
+                "காஞ்சிபுரம்": (12.8342, 79.7036),
+                "chengalpattu": (12.6841, 79.9836),
+                "செங்கல்பட்டு": (12.6841, 79.9836),
+                "tiruvallur": (13.1432, 79.9074),
+                "திருவள்ளூர்": (13.1432, 79.9074),
+                "vellore": (12.9165, 79.1325),
+                "வேலூர்": (12.9165, 79.1325),
+                "ranipet": (12.9272, 79.3328),
+                "tirupathur": (12.4939, 78.5678),
+                "tiruppur": (11.1085, 77.3411),
+                "திருப்பூர்": (11.1085, 77.3411),
+                "erode": (11.3410, 77.7172),
+                "ஈரோடு": (11.3410, 77.7172),
+                "namakkal": (11.2189, 78.1674),
+                "நாமக்கல்": (11.2189, 78.1674),
+                "karur": (10.9601, 78.0766),
+                "கரூர்": (10.9601, 78.0766),
+                "dharmapuri": (12.1211, 78.1582),
+                "தருமபுரி": (12.1211, 78.1582),
+                "krishnagiri": (12.5186, 78.2137),
+                "கிருஷ்ணகிரி": (12.5186, 78.2137),
+                "cuddalore": (11.7480, 79.7714),
+                "கடலூர்": (11.7480, 79.7714),
+                "villupuram": (11.9401, 79.4861),
+                "விழுப்புரம்": (11.9401, 79.4861),
+                "kallakurichi": (11.7384, 78.9639),
+                "pudukkottai": (10.3797, 78.8208),
+                "புதுக்கோட்டை": (10.3797, 78.8208),
+                "tiruvarur": (10.7725, 79.6365),
+                "திருவாரூர்": (10.7725, 79.6365),
+                "nagapattinam": (10.7672, 79.8449),
+                "நாகப்பட்டினம்": (10.7672, 79.8449),
+                "mayiladuthurai": (11.1018, 79.6522),
+                "perambalur": (11.2342, 78.8820),
+                "ariyalur": (11.1401, 79.0786),
+                "nilgiris": (11.4102, 76.6950),
+                "kanyakumari": (8.0883, 77.5385),
+                "கன்னியாகுமரி": (8.0883, 77.5385),
+                "tenkasi": (8.9594, 77.3150),
+                "தென்காசி": (8.9594, 77.3150)
             }
 
-            base_center = (9.8227, 78.7844) if ("mangalam" in district_key or "mangalam" in taluk_key or "சிங்கமங்கலம்" in taluk_key) else (12.9600, 80.2402)
+            base_center = (8.7826, 78.0267) # Default to Thoothukudi study area
             matched = False
             for k, (lat, lng) in taluk_coords.items():
                 if k in taluk_key or k in district_key:

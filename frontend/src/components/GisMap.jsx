@@ -169,7 +169,7 @@ export default function GisMap({
   const encroachmentGeojsonList = reconciliationData?.discrepancies?.encroachments?.encroachment_polygons_geojson || [];
 
   return (
-    <div className="dash-card overflow-hidden flex flex-col h-full relative">
+    <div className="dash-card overflow-hidden flex flex-col h-full relative isolate z-0">
       {/* Top Map Switcher & District Locator Header */}
       <div className="p-3 bg-white border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 z-10">
         <div className="flex items-center gap-2">
@@ -329,7 +329,7 @@ export default function GisMap({
         </MapContainer>
 
         {/* Selected Parcel Badge Tag floating in map center */}
-        <div className="absolute top-14 left-1/2 transform -translate-x-1/2 z-[400] bg-slate-900/90 text-white border border-yellow-400/80 px-4 py-2 rounded-xl shadow-2xl backdrop-blur-md flex items-center gap-3 pointer-events-none">
+        <div className="absolute top-14 left-1/2 transform -translate-x-1/2 z-10 bg-slate-900/90 text-white border border-yellow-400/80 px-4 py-2 rounded-xl shadow-2xl backdrop-blur-md flex items-center gap-3 pointer-events-none">
           <div className="w-6 h-6 rounded-full bg-yellow-400 text-slate-900 font-bold flex items-center justify-center text-xs shrink-0 shadow">
             📍
           </div>
@@ -351,16 +351,16 @@ export default function GisMap({
         </div>
 
         {/* Floating Callout Tags */}
-        <div className="absolute top-10 right-28 z-[400] bg-rose-600/90 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md pointer-events-none border border-rose-400 flex items-center gap-1">
+        <div className="absolute top-10 right-28 z-10 bg-rose-600/90 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md pointer-events-none border border-rose-400 flex items-center gap-1">
           <span>🌊</span> Water Body Buffer Zone (30m)
         </div>
 
-        <div className="absolute bottom-28 right-24 z-[400] bg-amber-600/90 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md pointer-events-none border border-amber-400 flex items-center gap-1">
+        <div className="absolute bottom-28 right-24 z-10 bg-amber-600/90 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md pointer-events-none border border-amber-400 flex items-center gap-1">
           <span>🛣️</span> Road RoW Buffer (10m)
         </div>
 
         {/* Map Legend Overlay (Bottom Left) */}
-        <div className="absolute bottom-4 left-4 z-[400] bg-slate-900/90 text-slate-200 p-3 rounded-xl border border-slate-700/80 shadow-xl backdrop-blur-md text-[10px] space-y-1.5">
+        <div className="absolute bottom-4 left-4 z-10 bg-slate-900/90 text-slate-200 p-3 rounded-xl border border-slate-700/80 shadow-xl backdrop-blur-md text-[10px] space-y-1.5">
           <div className="font-bold text-slate-300 text-[11px] border-b border-slate-700 pb-1 flex items-center justify-between">
             <span>GIS Map Legend</span>
             <span className="text-[9px] text-emerald-400 font-normal">{currentDistrict}</span>
@@ -388,7 +388,7 @@ export default function GisMap({
         </div>
 
         {/* Mini-map Inset (Bottom Right) */}
-        <div className="absolute bottom-4 right-4 z-[400] w-24 h-24 rounded-xl overflow-hidden border-2 border-slate-700/90 bg-slate-900 shadow-xl pointer-events-none hidden sm:block">
+        <div className="absolute bottom-4 right-4 z-10 w-24 h-24 rounded-xl overflow-hidden border-2 border-slate-700/90 bg-slate-900 shadow-xl pointer-events-none hidden sm:block">
           <div className="w-full h-full bg-[#18281F] flex items-center justify-center relative">
             <span className="absolute top-1 left-2 text-[9px] font-bold text-slate-400 font-mono">N</span>
             <div className="w-8 h-8 border border-emerald-400/80 bg-emerald-500/20 rounded"></div>

@@ -100,7 +100,7 @@ class BatchIngestionEngine:
 
                         doc_data = ocr_engine.extract_from_file_bytes(file_data, filename, category)
                         doc_data["doc_category"] = category
-                        survey_no = doc_data.get("full_survey_ref") or doc_data.get("survey_no") or "102/3A"
+                        survey_no = doc_data.get("full_survey_ref") or doc_data.get("survey_no") or "384"
                         
                         fmb_data = fmb_engine.calculate_fmb_polygon(survey_no)
                         reconciliation = spatial_engine.reconcile_land_record(doc_data, fmb_data)
@@ -173,7 +173,7 @@ class BatchIngestionEngine:
                     # Run Multimodal OCR
                     doc_data = ocr_engine.extract_from_file_bytes(file_data, filename, category)
                     doc_data["doc_category"] = category
-                    survey_no = doc_data.get("full_survey_ref") or doc_data.get("survey_no") or "102/3A"
+                    survey_no = doc_data.get("full_survey_ref") or doc_data.get("survey_no") or "384"
                     
                     # Compute FMB, Spatial reconciliation, Terrain & Risk
                     fmb_data = fmb_engine.calculate_fmb_polygon(survey_no)
@@ -240,51 +240,81 @@ class BatchIngestionEngine:
         processed_docs = []
         processed_layers = []
 
-        # 1. Scan Land_documents
-        if os.path.exists(LAND_DOCS_DIR):
-            for root, _, files in os.walk(LAND_DOCS_DIR):
+        # 1. Scan Land_documents and any root data folders
+        scan_dirs = [LAND_DOCS_DIR, DATA_DIR]
+        scanned_paths = set()
+        
+        for base_dir in scan_dirs:
+            if not os.path.exists(base_dir):
+                continue
+            for root, _, files in os.walk(base_dir):
+                # Skip geospatial layer folder during document scan
+                if "geospatial" in root.lower():
+                    continue
                 for f in files:
                     ext = os.path.splitext(f)[1].lower()
-                    if ext in [".pdf", ".jpg", ".jpeg", ".png", ".tif", ".tiff", ".txt"]:
+                    if ext in [".pdf", ".jpg", ".jpeg", ".png", ".tif", ".tiff", ".txt"] and f != "sample_documents.json":
                         file_path = os.path.join(root, f)
+                        if file_path in scanned_paths:
+                            continue
+                        scanned_paths.add(file_path)
                         with open(file_path, "rb") as fp:
                             file_data = fp.read()
                         
                         category = "LA_Patta_Document"
-                        path_lower = root.lower()
-                        if "patta" in path_lower or "la_" in path_lower:
+                        path_lower = (root + "/" + f).lower()
+                        if "3(1)" in path_lower:
+                            category = "LA_Section_3_1_Notification"
+                        elif "3(2)" in path_lower:
+                            category = "LA_Section_3_2_Notice"
+                        elif "7(2)" in path_lower or "7(3)" in path_lower:
+                            category = "LA_Section_7_Award"
+                        elif "disbursed" in path_lower:
+                            category = "LA_Compensation_Disbursed"
+                        elif "court deposit" in path_lower:
+                            category = "LA_Court_Deposit_Disputed"
+                        elif "patta transferred" in path_lower:
+                            category = "LA_Patta_Transferred"
+                        elif "possession" in path_lower:
+                            category = "LA_Possession_Taken"
+                        elif "patta" in path_lower or "la_" in path_lower:
                             category = "LA_Patta_Document"
                         elif "lps" in path_lower or "plan" in path_lower or "schedule" in path_lower:
                             category = "Land_Plan_Schedule_LPS"
-                        elif "administrative" in path_lower or "sanction" in path_lower or "as" in path_lower:
+                        elif "administrative" in path_lower or "sanction" in path_lower or "as." in path_lower or f.lower() == "as.pdf":
                             category = "Administrative_Sanction_AS"
-                        elif "government" in path_lower or "order" in path_lower or "go" in path_lower:
+                        elif "government" in path_lower or "order" in path_lower or "go." in path_lower or f.lower() == "go.pdf":
                             category = "Government_Order_GO"
 
-                        doc_data = ocr_engine.extract_from_file_bytes(file_data, f, category)
-                        doc_data["doc_category"] = category
-                        survey_no = doc_data.get("full_survey_ref") or doc_data.get("survey_no") or "102/3A"
-                        fmb_data = fmb_engine.calculate_fmb_polygon(survey_no)
-                        reconciliation = spatial_engine.reconcile_land_record(doc_data, fmb_data)
-                        risk_evaluation = risk_analyzer.evaluate_risk(reconciliation)
+                        # Limit active full OCR pipeline to 60 diverse documents for instant UI responsiveness
+                        if len(processed_docs) < 60:
+                            try:
+                                doc_data = ocr_engine.extract_from_file_bytes(file_data, f, category)
+                                doc_data["doc_category"] = category
+                                survey_no = doc_data.get("full_survey_ref") or doc_data.get("survey_no") or "384"
+                                fmb_data = fmb_engine.calculate_fmb_polygon(survey_no)
+                                reconciliation = spatial_engine.reconcile_land_record(doc_data, fmb_data)
+                                risk_evaluation = risk_analyzer.evaluate_risk(reconciliation)
 
-                        lat, lng = spatial_engine.extract_centroid_lat_lng(reconciliation.get("cadastral_parcel", {}).get("geometry", {}))
-                        terrain_data = terrain_engine.analyze_parcel_terrain(
-                            lat=lat,
-                            lng=lng,
-                            district=doc_data.get("district", "Thoothukudi"),
-                            taluk=doc_data.get("taluk", "Thoothukudi")
-                        )
+                                lat, lng = spatial_engine.extract_centroid_lat_lng(reconciliation.get("cadastral_parcel", {}).get("geometry", {}))
+                                terrain_data = terrain_engine.analyze_parcel_terrain(
+                                    lat=lat,
+                                    lng=lng,
+                                    district=doc_data.get("district", "Thoothukudi"),
+                                    taluk=doc_data.get("taluk", "Thoothukudi")
+                                )
 
-                        processed_docs.append({
-                            "filename": f,
-                            "category": category,
-                            "survey_no": survey_no,
-                            "ocr_extracted": doc_data,
-                            "reconciliation": reconciliation,
-                            "risk_assessment": risk_evaluation,
-                            "terrain_analysis": terrain_data
-                        })
+                                processed_docs.append({
+                                    "filename": f,
+                                    "category": category,
+                                    "survey_no": survey_no,
+                                    "ocr_extracted": doc_data,
+                                    "reconciliation": reconciliation,
+                                    "risk_assessment": risk_evaluation,
+                                    "terrain_analysis": terrain_data
+                                })
+                            except Exception as doc_err:
+                                errors.append(f"Error processing {f}: {str(doc_err)}")
 
         # 2. Scan Geospatial_Layer
         if os.path.exists(GEOSPATIAL_DIR):
@@ -312,7 +342,8 @@ class BatchIngestionEngine:
 
         return {
             "status": "SUCCESS",
-            "total_documents": len(processed_docs),
+            "total_documents_processed": len(processed_docs),
+            "total_files_on_disk": len(scanned_paths),
             "total_layers": len(processed_layers),
             "documents": processed_docs,
             "layers": processed_layers
