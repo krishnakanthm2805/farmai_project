@@ -1,0 +1,20 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: farmai-backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: farmai-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always

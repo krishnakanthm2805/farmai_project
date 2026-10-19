@@ -1,0 +1,62 @@
+{
+  "type": "FeatureCollection",
+  "name": "Perungudi_Road_Network_and_RoW",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "road_name": "Rajiv Gandhi Salai / OMR (SH-49A)",
+        "category": "State Highway / Arterial Corridor",
+        "row_width_meters": 45.0,
+        "buffer_meters": 22.5
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.2395,
+            12.9625
+          ],
+          [
+            80.242,
+            12.9626
+          ],
+          [
+            80.245,
+            12.9627
+          ],
+          [
+            80.248,
+            12.9628
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "road_name": "Judges Colony 1st Cross Main Road",
+        "category": "Municipal Secondary Road",
+        "row_width_meters": 12.0,
+        "buffer_meters": 6.0
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.2398,
+            12.9598
+          ],
+          [
+            80.2435,
+            12.9599
+          ],
+          [
+            80.2465,
+            12.96
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "type": "FeatureCollection",
+  "name": "Perungudi_Cadastral_Parcels",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "P-TN-CHN-102-1A",
+        "survey_no": "102/1A",
+        "village": "Perungudi",
+        "taluk": "Sholinganallur",
+        "district": "Chennai",
+        "patta_no": "PAT-2024-8841",
+        "gis_area_sqm": 4856.23,
+        "gis_area_acres": 1.2,
+        "gis_area_cents": 120.0,
+        "land_classification": "Ryotwari Dry (Punjai)",
+        "registered_owner": "K. R. Ramanathan & R. Meenakshi",
+        "is_disputed": false,
+        "neighbor_north": "102/1B",
+        "neighbor_south": "Village Road",
+        "neighbor_east": "103/2",
+        "neighbor_west": "101/4"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.24,
+              12.96
+            ],
+            [
+              80.2408,
+              12.9602
+            ],
+            [
+              80.2407,
+              12.9608
+            ],
+            [
+              80.2399,
+              12.9606
+            ],
+            [
+              80.24,
+              12.96
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "P-TN-CHN-102-1B",
+        "survey_no": "102/1B",
+        "village": "Perungudi",
+        "taluk": "Sholinganallur",
+        "district": "Chennai",
+        "patta_no": "PAT-2024-8842",
+        "gis_area_sqm": 3440.0,
+        "gis_area_acres": 0.85,
+        "gis_area_cents": 85.0,
+        "land_classification": "Ryotwari Dry (Punjai)",
+        "registered_owner": "S. Sundaravalli",
+        "is_disputed": false,
+        "neighbor_north": "102/2",
+        "neighbor_south": "102/1A",
+        "neighbor_east": "103/1",
+        "neighbor_west": "101/3"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2399,
+              12.9606
+            ],
+            [
+              80.2407,
+              12.9608
+            ],
+            [
+              80.2406,
+              12.9613
+            ],
+            [
+              80.2398,
+              12.9611
+            ],
+            [
+              80.2399,
+              12.9606
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "P-TN-CHN-104-2B",
+        "survey_no": "104/2B",
+        "village": "Perungudi",
+        "taluk": "Sholinganallur",
+        "district": "Chennai",
+        "patta_no": "PAT-2023-1109",
+        "gis_area_sqm": 5746.54,
+        "gis_area_acres": 1.42,
+        "gis_area_cents": 142.0,
+        "land_classification": "Ryotwari Wet (Nanjai)",
+        "registered_owner": "V. Jayaprakash",
+        "is_disputed": true,
+        "neighbor_north": "104/1",
+        "neighbor_south": "105/1",
+        "neighbor_east": "104/2C",
+        "neighbor_west": "104/2A"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.242,
+              12.96
+            ],
+            [
+              80.243,
+              12.9601
+            ],
+            [
+              80.2429,
+              12.9608
+            ],
+            [
+              80.2418,
+              12.9607
+            ],
+            [
+              80.242,
+              12.96
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "P-TN-CHN-108-3",
+        "survey_no": "108/3",
+        "village": "Perungudi",
+        "taluk": "Sholinganallur",
+        "district": "Chennai",
+        "patta_no": "PAT-2021-4091",
+        "gis_area_sqm": 8093.71,
+        "gis_area_acres": 2.0,
+        "gis_area_cents": 200.0,
+        "land_classification": "Ryotwari Dry (Punjai)",
+        "registered_owner": "M/s Greenfield Logistics Infrastructure",
+        "is_disputed": true,
+        "neighbor_north": "108/2",
+        "neighbor_south": "Eri Poramboke (Lake)",
+        "neighbor_east": "109/1",
+        "neighbor_west": "108/4"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.244,
+              12.9585
+            ],
+            [
+              80.2452,
+              12.9587
+            ],
+            [
+              80.245,
+              12.9595
+            ],
+            [
+              80.2438,
+              12.9593
+            ],
+            [
+              80.244,
+              12.9585
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "P-TN-CHN-110-1A",
+        "survey_no": "110/1A",
+        "village": "Perungudi",
+        "taluk": "Sholinganallur",
+        "district": "Chennai",
+        "patta_no": "PAT-2024-5512",
+        "gis_area_sqm": 4250.0,
+        "gis_area_acres": 1.05,
+        "gis_area_cents": 105.0,
+        "land_classification": "Commercial / Mixed",
+        "registered_owner": "A. Balakrishnan & Sons",
+        "is_disputed": true,
+        "neighbor_north": "Old Mahabalipuram Road (OMR)",
+        "neighbor_south": "110/1B",
+        "neighbor_east": "111/1",
+        "neighbor_west": "109/4"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2405,
+              12.962
+            ],
+            [
+              80.2415,
+              12.9621
+            ],
+            [
+              80.2414,
+              12.9626
+            ],
+            [
+              80.2403,
+              12.9625
+            ],
+            [
+              80.2405,
+              12.962
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "P-TN-CHN-112-1",
+        "survey_no": "112/1",
+        "village": "Perungudi",
+        "taluk": "Sholinganallur",
+        "district": "Chennai",
+        "patta_no": "PAT-2022-7721",
+        "gis_area_sqm": 6070.28,
+        "gis_area_acres": 1.5,
+        "gis_area_cents": 150.0,
+        "land_classification": "Ryotwari Wet (Nanjai)",
+        "registered_owner": "G. Murugan",
+        "is_disputed": true,
+        "neighbor_north": "112/2",
+        "neighbor_south": "111/3",
+        "neighbor_east": "113/1",
+        "neighbor_west": "112/3"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.246,
+              12.961
+            ],
+            [
+              80.2472,
+              12.9612
+            ],
+            [
+              80.247,
+              12.9619
+            ],
+            [
+              80.2458,
+              12.9617
+            ],
+            [
+              80.246,
+              12.961
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

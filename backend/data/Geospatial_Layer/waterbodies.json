@@ -1,0 +1,68 @@
+{
+  "type": "FeatureCollection",
+  "name": "Perungudi_Waterbodies_and_Buffers",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_name": "Perungudi Lake (Perungudi Eri)",
+        "category": "Waterbody / Eri Poramboke",
+        "buffer_zone_meters": 30.0,
+        "restriction": "Strictly No Construction / Encroachment Zone (CRZ/TN Water Resources Act)"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2435,
+              12.9575
+            ],
+            [
+              80.246,
+              12.9578
+            ],
+            [
+              80.2455,
+              12.9589
+            ],
+            [
+              80.243,
+              12.9586
+            ],
+            [
+              80.2435,
+              12.9575
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_name": "Buckingham Canal Feeder Channel",
+        "category": "Drainage Channel / Odai",
+        "buffer_zone_meters": 15.0,
+        "restriction": "Public Waterway - Mandatory 15m Setback"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.239,
+            12.959
+          ],
+          [
+            80.2425,
+            12.9592
+          ],
+          [
+            80.2475,
+            12.9596
+          ]
+        ]
+      }
+    }
+  ]
+}
